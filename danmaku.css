@@ -1,0 +1,25 @@
+html, body {
+	margin: 0;
+	padding: 0;
+}
+
+html {
+	font-family: sans-serif;
+}
+
+canvas {
+    display: block;
+    float: left;
+	border: 1px solid black;
+}
+
+
+#tracker {
+	top: 0;
+	right: 10px;
+	background-color: white;
+}
+#score {
+    text-align: right;
+}
+
