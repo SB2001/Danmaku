@@ -11,7 +11,6 @@ $(document).ready(function() {
     var bullets = []
     var canvas = document.querySelector('canvas');
     var ctx = canvas.getContext('2d');
-    var bulletSource = canvas.getContext("2d");
     var context = canvas.getContext("2d");
     var x = 740;
     var y = 803;
@@ -95,23 +94,23 @@ $(document).ready(function() {
       }
     }
     function updateHitbox(){
-       var distance = Math.sqrt( Math.pow((bullet.x - x), 2) + Math.pow((bullet.y - y),2) );
-       let health = document.getElementById("health")
-       console.log("DISTANCE " + x + " , " + y);
-       console.log("SPACE: " + distance);
-       console.log(bullet.radius + RADIUS + 6);
-       if (distance < bullet.radius + RADIUS + 6 && invincible == false) {
-           console.log("whoops");
-           ctx.fillStyle = "white";
-           ctx.fill();
-           health.value -= 20;
-           invincible = true;
-       }
+        for (i=0; i<bullet.length; i++){
+            var distance = Math.sqrt((bullets[i].x *bullets[i].x) + (bullets[i].y * bullets[i].y));
+            let health = document.getElementById("health")
+            if (distance < bullets[i].radius + RADIUS + 6 && invincible == false) {
+                console.log("whoops");
+                ctx.fillStyle = "red";
+                ctx.fill();
+                health.value -= 20;
+                invincible = true;
+                bullets.splice(i, 1)
+            }
+        }
     }
     if (invincible == true){
         setTimeout(function(){
             invincible = false
-        }, 600)
+        }, 100)
     }
     setTimeout(function(){
         window.requestAnimationFrame(moveBullet);},2500)
