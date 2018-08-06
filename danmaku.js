@@ -8,6 +8,7 @@ $(document).ready(function() {
       return result;
     }
     var invincible = false
+    var quadrant;
     var bullets = []
     var canvas = document.querySelector('canvas');
     var ctx = canvas.getContext('2d');
@@ -20,8 +21,6 @@ $(document).ready(function() {
     var frames = 0;
     var directions = ['+', '-','+', '-','+', '-', '0']
     var speeds = [.5, 1, 1.5, 2, 2.5, 3]
-    var isColliding = false;
-    var returnedObjects = []
     function canvasDraw() {
         ctx.fillStyle = "black";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -80,7 +79,6 @@ $(document).ready(function() {
         player.y = RADIUS;
       }
       tracker.textContent = "X position: " + player.x + ", Y position: " + player.y
-      getQuadrant(player.x, player.y);
 
     this.newPos = function() {
         this.player.x += this.speedX;
@@ -95,89 +93,20 @@ $(document).ready(function() {
         });
       }
     }
-    function getQuadrant(x, y){
-        var quads = document.getElementById('quads');
-        var quadrant;
-        if (x<750 && y<565){
-            quadrant = "q1"
-        }
-        if (x>750 && y<565){
-            quadrant = "q2"
-        }
-        if (x<750 && y>565){
-            quadrant = "q3"
-        }
-        if (x>750 && y>565){
-            quadrant = "q4"
-        }
-        quads.textContent = quadrant
-    }
+
     function updateHitbox(){
-            if (quadrant = "q1"){
                 for (i=0; i<bullets.length; i++){
-                    if (bullets[i].x <= 750 && bullets[i].y <= 565){
-                        var distance = Math.sqrt((bullets[i].x **2) + (bullets[i].y **2));
+                        var distance = Math.sqrt(((bullets[i].x **2) + (bullets[i].y **2))-((player.x **2)+(player.y**2)));
                         let health = document.getElementById("health")
                         if (distance < bullets[i].radius + RADIUS + 6 && invincible == false) {
-                            console.log("whoops");
+                            console.log(player.x, player.y, bullets[i].x, bullets[i].y);
                             ctx.fillStyle = "white";
                             ctx.fill();
                             health.value -= 20;
                             invincible = true;
-                            bullets.splice(i, 1)
-                        }
                     }
                 }
             }
-            if (quadrant = "q2"){
-                for (i=0; i<bullets.length; i++){
-                    if (bullets[i].x > 750 && bullets[i].y < 565){
-                        var distance = Math.sqrt((bullets[i].x **2) + (bullets[i].y **2));
-                        let health = document.getElementById("health")
-                        if (distance < bullets[i].radius + RADIUS + 6 && invincible == false) {
-                            console.log("whoops");
-                            ctx.fillStyle = "white";
-                            ctx.fill();
-                            health.value -= 20;
-                            invincible = true;
-                            bullets.splice(i, 1)
-                        }
-                    }
-                }
-            }
-            if (quadrant = "q3"){
-                for (i=0; i<bullets.length; i++){
-                    if (bullets[i].x < 750 && bullets[i].y > 565){
-                        var distance = Math.sqrt((bullets[i].x **2) + (bullets[i].y **2));
-                        let health = document.getElementById("health")
-                        if (distance < bullets[i].radius + RADIUS + 6 && invincible == false) {
-                            console.log("whoops");
-                            ctx.fillStyle = "white";
-                            ctx.fill();
-                            health.value -= 20;
-                            invincible = true;
-                            bullets.splice(i, 1)
-                        }
-                    }
-                }
-            }
-            if (quadrant = "q4"){
-                for (i=0; i<bullets.length; i++){
-                    if (bullets[i].x > 750 && bullets[i].y > 565){
-                        var distance = Math.sqrt((bullets[i].x **2) + (bullets[i].y **2));
-                        let health = document.getElementById("health")
-                        if (distance < bullets[i].radius + RADIUS + 6 && invincible == false) {
-                            console.log("whoops");
-                            ctx.fillStyle = "white";
-                            ctx.fill();
-                            health.value -= 20;
-                            invincible = true;
-                            bullets.splice(i, 1)
-                        }
-                    }
-                }
-            }
-    }
     if (invincible == true){
         setTimeout(function(){
             invincible = false
@@ -217,12 +146,12 @@ $(document).ready(function() {
                 (bullets[i].xMove =="0" && bullets[i].yMove =="0")||bullets[i].position >= .8||bullets[i].position <= .15||((bullets[i].xMove =="0" || bullets[i].yMove =="0")&& i/2 ===0)){
                 bullets.splice(i, 1);
             }
-
         }
-        updateHitbox();
         window.requestAnimationFrame(moveBullet);
+
         canvasDraw();
         placeBullets();
+        updateHitbox();
         frames = frames + 1
     }
     $("#score").html('Score = '+ frames)
@@ -238,7 +167,7 @@ $(document).ready(function() {
         var bulletClone = {
             x: d,
             y: g,
-            radius: RAD,
+            radius: Math.random() * 50,
             xMove: directions[Math.floor(Math.random() * directions.length)],
             yMove: directions[Math.floor(Math.random() * directions.length)],
             xSpeed: speeds[Math.floor(Math.random() * speeds.length)],
@@ -250,10 +179,10 @@ $(document).ready(function() {
         bullets.push(bulletClone);
     }
     setInterval(function(){
-        for (i= 0; i<=10; i++){
+        for (i= 0; i<=5; i++){
             makeBullet()
         }
-    }, 100)
+    }, 200)
     setInterval(function(){
         d= Math.random()/Math.random() *500
         g = Math.random()/Math.random() * 500
