@@ -22,4 +22,7 @@ canvas {
 #score {
     text-align: right;
 }
+#quads{
+    float: right;
+}
 
